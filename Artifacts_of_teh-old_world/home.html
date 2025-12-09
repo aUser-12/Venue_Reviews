@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-gradient-start: #C2DC80;
+            --bg-gradient-end: #EA9CAF;
+            --glass-color: rgba(255, 248, 250, 0.67);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-color: #FFF8FA;
+            --icon-stroke: #C8D1B1;
+            --header-std-height: 5vh;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            /* The linear gradient from the SVG */
+            background: linear-gradient(249deg, #C2DC80 2.17%, #EA9CAF 97.83%);
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Noise Texture Overlay to match the SVG grain filter */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            /* Base64 noise pattern */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            gap: 5vh;
+        }
+
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            flex-shrink: 0; /* Prevents header from squishing */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4vw; /* Responsive gap */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #FFF8FA;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; 
+            left: 0;
+            width: 0; 
+            height: 2px; 
+            background-color: #FFF8FA; 
+            transition: width 0.3s ease-out; 
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            margin: 0 4vw;
+            position: relative;
+        }
+
+        .search-input {
+            height: var(--header-std-height);
+            width: 100%;
+            padding: 0 60px;
+            border-radius: 50px;
+            border: none;
+            background: var(--glass-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 1.1rem;
+            color: white;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-icon {
+            z-index: 100;
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(var(--header-std-height) - 1vh);
+            height: calc(var(--header-std-height) - 2vh);
+            fill: #FFF8FA;
+            opacity: 0.4;
+        }
+
+        .profile-circle {
+            width: var(--header-std-height);
+            height: var(--header-std-height);
+            border-radius: 50%;
+            background: var(--glass-color);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Main Card Section --- */
+        .main-card {
+            
+            flex-grow: 1;
+            width: 100%;
+            background: rgba(255, 248, 250, 0.6);
+            border-radius: 40px;
+            /* Scaled down from 67px for web */
+
+            /* Glassmorphism Magic */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+            position: relative;
+            padding: 60px;
+            display: flex;
+            align-items: flex-end;
+            /* Pushes content to bottom */
+            justify-content: space-between;
+        }
+
+        .trending {
+            display: flex;
+            align-items: center;
+            /* vertically center text + button */
+            gap: 20px;
+            size: 4vw;
+            /* space between text and button */
+        }
+
+        .trending-text {
+            color: #FFF8FA;
+            size: 4vw;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+            margin: 0px;
+            /* remove default h1 spacing */
+        }
+
+        .arrow-btn {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            padding: 0;
+            /* ensures SVG stays centered */
+        }
+
+        .arrow-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .arrow-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-container {
+                width: 100%;
+                margin: 0;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .trending-text {
+                font-size: 4vw;
+            }
+
+            .arrow-btn {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body> 
+
+    <div class="container">
+        <header>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Community</a>
+                <a href="#">Blogpost</a>
+            </nav>
+
+            <div class="search-container">
+                <img class="search-icon" src="mag.svg">
+                <input type="text" class="search-input">
+            </div>
+
+            <div class="profile-circle"></div>
+        </header>
+        <main class="main-card">
+            <div class="trending">
+                <h1 class="trending-text">Currently trending in your place</h1>
+
+                <button class="arrow-btn">
+                    <svg class="arrow-icon" viewBox="0 0 119 119" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 60H117M117 60L58.5 1.5M117 60L58.5 118.5" stroke="#C8D1B1" stroke-width="12"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

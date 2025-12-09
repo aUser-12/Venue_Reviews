@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+ :root {
+    --bg-gradient-start: #C2DC80;
+    --bg-gradient-end: #EA9CAF;
+    --glass-color: rgba(255, 248, 250, 0.67);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --text-color: #FFF8FA;
+    --text-muted: #EAEAEA;
+    --icon-stroke: #C8D1B1;
+    --header-std-height: 5vh;
+    --card-radius: 30px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(249deg, #C2DC80 2.17%, #EA9CAF 97.83%);
+    font-family: 'Playfair Display', serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: var(--text-color);
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* Noise Texture */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4vw;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #FFF8FA;
+    font-size: 1.2rem;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin: 0 4vw;
+    position: relative;
+}
+
+.search-input {
+    height: 50px;
+    width: 100%;
+    padding: 0 60px;
+    border-radius: 50px;
+    border: none;
+    background: var(--glass-color);
+    backdrop-filter: blur(10px);
+    font-size: 1.1rem;
+    color: white;
+    outline: none;
+}
+
+.search-icon {
+    z-index: 100;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+}
+
+.profile-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--glass-color);
+}
+
+/* Title + Write Review Row */
+.page-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Page title */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-title h1 {
+    font-size: 2.5rem;
+}
+
+/* --- Write Review Box --- */
+.write-review {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.write-review .label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.write-review label {
+    font-size: 1.3rem;
+    color: #FFF8FA;
+    opacity: 0.9;
+}
+
+.write-review input[type="number"] {
+    width: 70px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: none;
+    background: var(--glass-color);
+    color: #333;
+    font-size: 1rem;
+}
+
+.write-review textarea {
+    width: 100%;
+    height: 110px;
+    padding: 15px;
+    border-radius: var(--card-radius);
+    border: none;
+    background: rgba(255, 248, 250, 0.6);
+    backdrop-filter: blur(12px);
+    font-family: 'Playfair Display', serif;
+    color: #333;
+    resize: none;
+    outline: none;
+}
+
+/* Grid Layout */
+.details-grid {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2vw;
+}
+
+.glass-card {
+    background: rgba(255, 248, 250, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: var(--card-radius);
+    padding: 30px;
+}
+
+.section-label {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Left Column */
+.col-left {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.overview-card {
+    min-height: 200px;
+}
+
+.overview-text {
+    font-size: 1.1rem;
+    color: rgba(100, 100, 100, 0.8);
+}
+
+/* Right Column */
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.ratings-card {
+    padding: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.star {
+    width: 35px;
+    height: 35px;
+    fill: #D3D3D3;
+}
+
+.reviews-card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 200px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Community</a>
+            <a href="#">Blogpost</a>
+        </nav>
+
+        <div class="search-container">
+            <img class="search-icon" src="mag.svg" alt="Search">
+            <input type="text" class="search-input">
+        </div>
+
+        <div class="profile-circle"></div>
+    </header>
+
+    <!-- PAGE TITLE + WRITE REVIEW -->
+    <div class="page-title-row">
+
+        <div class="page-title">
+            <svg class="location-pin-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <h1>This Place</h1>
+        </div>
+
+        <!-- NEW WRITE REVIEW BOX -->
+        <div class="write-review glass-card">
+            <div class="label-row">
+                <label>Write Review</label>
+                <input type="number" min="1" max="5" placeholder="1-5">
+            </div>
+            <textarea placeholder="Write your review here..."></textarea>
+        </div>
+
+    </div>
+
+    <!-- MAIN GRID -->
+    <main class="details-grid">
+        
+        <!-- LEFT COLUMN -->
+        <div class="col-left">
+
+            <div>
+                <span class="section-label">Overview:</span>
+                <div class="glass-card overview-card">
+                    <div class="overview-text"></div>
+                </div>
+            </div>
+
+            <div>
+                <span class="section-label">Location:</span>
+                <div class="glass-card location-card"></div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-right">
+
+            <div>
+                <span class="section-label">Ratings:</span>
+                <div class="glass-card ratings-card">
+                    <!-- Empty stars (dynamic later) -->
+                    <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+            </div>
+
+            <div>
+                <span class="section-label">Reviews:</span>
+                <div class="glass-card reviews-card">
+                    <!-- Empty for now -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

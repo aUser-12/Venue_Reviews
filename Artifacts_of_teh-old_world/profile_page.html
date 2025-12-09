@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+ /* --- SHARED VARIABLES --- */
+ :root {
+    --bg-gradient-start: #C2DC80;
+    --bg-gradient-end: #EA9CAF;
+    --glass-color: rgba(255, 248, 250, 0.60);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #FFF8FA;
+    --card-radius: 30px;
+    --input-radius: 50px;
+    /* Define a consistent width for the sidebar and nav links column */
+    --sidebar-width: 300px;
+    /* Define a consistent gap between columns */
+    --layout-gap: 4vw;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(249deg, #C2DC80 2.17%, #EA9CAF 97.83%);
+    font-family: 'Playfair Display', serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: var(--text-color);
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* Noise Texture Overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    max-width: 1400px;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
+/* --- HEADER --- */
+header {
+    /* Changed from flex to grid to ensure alignment with the main content */
+    display: grid;
+    /* col 1: Fixed width for Nav links (matches sidebar width)
+       col 2: Flexible width for Search bar (matches form fields width)
+       col 3: Auto width for Profile circle
+    */
+    grid-template-columns: var(--sidebar-width) 1fr auto;
+    /* Use the same gap as the main profile grid */
+    column-gap: var(--layout-gap);
+    align-items: center;
+    padding: 10px 0;
+    flex-shrink: 0; 
+}
+
+.nav-links {
+    /* Place in the first column */
+    grid-column: 1;
+    display: flex;
+    /* Distribute space between links */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #FFF8FA;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; 
+    left: 0;
+    width: 0; 
+    height: 2px; 
+    background-color: #FFF8FA; 
+    transition: width 0.3s ease-out; 
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.search-container {
+    /* Place in the second column */
+    grid-column: 2;
+    position: relative;
+    /* Ensure it fills the column width */
+    width: 100%;
+}
+
+.search-input {
+    height: 50px; 
+    /* Width is now controlled by the grid column */
+    width: 100%;
+    padding: 0 60px;
+    border-radius: 50px;
+    border: none;
+    background: var(--glass-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 1.1rem;
+    color: white;
+    outline: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.search-icon {
+    z-index: 100;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+}
+
+.profile-circle {
+    /* Place in the third column */
+    grid-column: 3;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--glass-color);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* --- MAIN PROFILE LAYOUT --- */
+.profile-grid {
+    flex-grow: 1;
+    display: grid;
+    /* Match the header's column structure exactly for alignment.
+       col 1: Fixed width for Sidebar
+       col 2: Flexible width for Form Fields
+    */
+    grid-template-columns: var(--sidebar-width) 1fr; 
+    /* Use the same gap as the header */
+    column-gap: var(--layout-gap);
+    /* Remove top margin as the container's gap handles it */
+    margin-top: 0;
+}
+
+/* -- Left Column: Avatar & Meta -- */
+.profile-sidebar {
+    /* Place in the first column */
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center; 
+    text-align: center;
+}
+
+.page-title {
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    line-height: 1.1;
+    width: 100%;
+    text-align: center;
+}
+
+.avatar-large {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: rgba(255, 248, 250, 0.67);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.edit-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.edit-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.verified-badge {
+    color: #98FB98; 
+    margin-left: 10px;
+}
+
+.meta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.meta-item {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* -- Right Column: Form Fields -- */
+.profile-details {
+    /* Place in the second column */
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    /* Align with the top of the avatar */
+    padding-top: 20px; 
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Ensure form groups fill the column width */
+    width: 100%;
+}
+
+.section-label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.glass-field {
+    /* Ensure fields fill the form group width */
+    width: 100%;
+    background: var(--glass-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--input-radius);
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    color: rgba(100, 100, 100, 0.8);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.field-standard {
+    height: 70px;
+}
+
+.field-large {
+    height: 200px;
+    border-radius: 30px; 
+    align-items: flex-start;
+    padding-top: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    /* Switch header back to a flex column for stacking */
+    header {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Reset grid placements */
+    .nav-links, .search-container, .profile-circle {
+        grid-column: auto;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    /* Switch main profile grid to a single column */
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .profile-sidebar, .profile-details {
+        grid-column: auto;
+    }
+    
+    .profile-sidebar {
+        align-items: center;
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Community</a>
+                <a href="#">Blogpost</a>
+            </nav>
+
+            <div class="search-container">
+                <img class="search-icon" src="mag.svg" alt="Search">
+                <input type="text" class="search-input">
+            </div>
+
+            <div class="profile-circle"></div>
+        </header>
+
+        <main class="profile-grid">
+            
+            <section class="profile-sidebar">
+                <h1 class="page-title">My Profile</h1>
+                
+                <div class="avatar-large"></div>
+                
+                <div class="edit-action">
+                    <svg class="edit-icon" viewBox="0 0 24 24" fill="white">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                    <span>Edit Profile</span>
+                    
+                    <!-- Verified badge with increased size -->
+                    <svg class="verified-badge" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+
+                <div class="meta-info">
+                    <div class="meta-item">Joined on: </div>
+                    <div class="meta-item">Location: </div>
+                </div>
+            </section>
+
+            <section class="profile-details">
+                
+                <div class="form-group">
+                    <label class="section-label">Display Name</label>
+                    <div class="glass-field field-standard">
+                        <!-- Content acts as placeholder -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="section-label">Description</label>
+                    <div class="glass-field field-large">
+                        <!-- Content acts as placeholder -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="section-label">Contact Options</label>
+                    <div class="glass-field field-standard">
+                        <!-- Content acts as placeholder -->
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+</body>
+</html>

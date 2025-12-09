@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New In Your Place</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+       :root {
+    /* Shared Variables */
+    --bg-gradient-start: #C2DC80;
+    --bg-gradient-end: #EA9CAF;
+    --glass-color: rgba(255, 248, 250, 0.67);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --text-color: #FFF8FA;
+    --icon-stroke: #C8D1B1;
+    --header-std-height: 5vh;
+    --card-radius: 30px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(249deg, #C2DC80 2.17%, #EA9CAF 97.83%);
+    font-family: 'Playfair Display', serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align top for scrolling */
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: var(--text-color);
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* Noise Texture */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 90%;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
+/* --- Header (Exact copy from Place Details) --- */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    flex-shrink: 0;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4vw;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #FFF8FA;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; 
+    left: 0;
+    width: 0; 
+    height: 2px; 
+    background-color: #FFF8FA; 
+    transition: width 0.3s ease-out; 
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin: 0 4vw;
+    position: relative;
+}
+
+.search-input {
+    height: 50px;
+    width: 100%;
+    padding: 0 60px;
+    border-radius: 50px;
+    border: none;
+    background: var(--glass-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 1.1rem;
+    color: white;
+    outline: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.search-icon {
+    z-index: 100;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+}
+
+.profile-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--glass-color);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Page Title Area (Aligned left for consistency) --- */
+.page-title {
+    display: flex;
+    align-items: center;
+    /* Removed justify-content: center to align left */
+    gap: 15px;
+    margin-bottom: 2vh; /* Consistent spacing */
+}
+
+.page-title h1 {
+    font-size: 2.5rem; /* Consistent size */
+    font-weight: 400; /* Consistent weight */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.location-pin-icon {
+    width: 40px;
+    height: 40px;
+    stroke: #FFF8FA;
+    fill: none;
+    stroke-width: 2;
+}
+
+/* --- Carousel Section --- */
+.carousel-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    width: 100%;
+}
+
+.cards-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 Equal columns */
+    gap: 2vw;
+    width: 100%;
+    max-width: 1400px; 
+}
+
+.feature-card {
+    background: rgba(255, 248, 250, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 40px; 
+    aspect-ratio: 3/4.5; 
+    width: 100%;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Navigation Arrow */
+.nav-arrow-btn {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    flex-shrink: 0; 
+    transition: transform 0.2s ease;
+}
+
+.nav-arrow-btn:hover {
+    transform: scale(1.05);
+}
+
+.arrow-icon {
+    width: 35px;
+    height: 35px;
+    stroke: #C8D1B1; 
+    stroke-width: 2.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .carousel-container {
+        flex-direction: column;
+    }
+    .cards-wrapper {
+        grid-template-columns: 1fr 1fr; 
+    }
+    .nav-arrow-btn {
+        transform: rotate(90deg); 
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cards-wrapper {
+        grid-template-columns: 1fr; 
+    }
+    .search-container {
+        display: none; 
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Community</a>
+                <a href="#">Blogpost</a>
+            </nav>
+
+            <div class="search-container">
+                <img class="search-icon" src="mag.svg" alt="Search">
+                <input type="text" class="search-input">
+            </div>
+
+            <div class="profile-circle"></div>
+        </header>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <svg class="location-pin-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <h1>New In Your Place</h1>
+        </div>
+
+        <!-- Main Carousel Content -->
+        <div class="carousel-container">
+            <!-- Three Glass Cards -->
+            <div class="cards-wrapper">
+                <div class="feature-card"></div>
+                <div class="feature-card"></div>
+                <div class="feature-card"></div>
+            </div>
+
+            <!-- Arrow Button (Right side) -->
+            <button class="nav-arrow-btn">
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+
+</body>
+</html>
